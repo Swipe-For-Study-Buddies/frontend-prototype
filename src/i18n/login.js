@@ -1,0 +1,24 @@
+const i18n = {
+  'login': {
+    'form': {
+      'email': 'Email 地址',
+      'password': '密碼',
+      'confirmPassword': '確認密碼',
+      'login': '登入',
+      'signup': '註冊',
+      'submit': '送出',
+      'resetPassword': '重設密碼',
+      'forgotPassword': '忘記密碼？',
+      'loginPage': '登入頁面',
+      'resetPasswordMessage': '請至信箱收信並重設密碼',
+    },
+    'error': {
+      'email': 'Email錯誤',
+      'password': '密碼錯誤',
+      'emptyEmail': 'Email 為必填',
+      'emptyPassword': '密碼為必填',
+      'confirmPassword': '兩次輸入的密碼不同',
+    }
+  }
+}
+export default i18n
