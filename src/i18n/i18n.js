@@ -1,5 +1,6 @@
 import login from './login';
 import resetPassword from './resetPassword';
+import profile from './profile';
 
 function flattenObject(ob, prefix = '') {
   const toReturn = {}
@@ -22,6 +23,7 @@ function flattenObject(ob, prefix = '') {
 const i18n = {
   ...login,
   ...resetPassword,
+  ...profile,
 };
 
 export default flattenObject(i18n)

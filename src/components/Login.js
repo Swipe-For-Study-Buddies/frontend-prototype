@@ -14,6 +14,7 @@ import Typography from '@mui/material/Typography';
 import Snackbar from '@mui/material/Snackbar';
 
 import AuthService from '../services/auth.service';
+import UserService from '../services/user.service';
 import ContextStore from '../common/context';
 
 function Copyright() {
@@ -43,6 +44,12 @@ function LoginForm() {
   const confirmPasswordError = error.confirmPassword ?? ''
 
   useEffect(() => {
+    UserService.getUserProfile().then(profile => {
+      setCurrentUser(profile)
+    })
+  }, [setCurrentUser]);
+
+  useEffect(() => {
     if (snackPack.length && !messageInfo) {
       // Set a new snack when we don't have an active one
       setMessageInfo({ ...snackPack[0] });
@@ -69,8 +76,8 @@ function LoginForm() {
       }
     } else if (page === 'signup') {
       try {
-        const res = await AuthService.register({ email, password })
-        console.log(res)
+        const profile = await AuthService.register({ email, password })
+        setCurrentUser(profile)
       } catch (ex) {
       }
     } else {
@@ -98,6 +105,7 @@ function LoginForm() {
     e.stopPropagation()
     e.preventDefault()
     setPage(newPage)
+    setError({})
   }
 
   const handleMessageClose = (event, reason) => {
@@ -152,7 +160,6 @@ function LoginForm() {
         md={7}
         sx={{
           backgroundImage: 'url(/background.png)',
-          backgroundRepeat: 'no-repeat',
           backgroundColor: (t) =>
             t.palette.mode === 'light' ? t.palette.grey[50] : t.palette.grey[900],
           backgroundSize: 'cover',
