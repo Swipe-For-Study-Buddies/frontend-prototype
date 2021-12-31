@@ -1,6 +1,8 @@
 import login from './login';
 import resetPassword from './resetPassword';
 import profile from './profile';
+import button from './button';
+import selectTagsDialog from './selectTagsDialog';
 
 function flattenObject(ob, prefix = '') {
   const toReturn = {}
@@ -24,6 +26,8 @@ const i18n = {
   ...login,
   ...resetPassword,
   ...profile,
+  ...button,
+  ...selectTagsDialog,
 };
 
 export default flattenObject(i18n)

@@ -10,6 +10,8 @@ const i18n = {
     'skill': '專長',
     'wantingToLearn': '我想學',
     'contacts': '聯絡方式',
+    'addContact': '新增聯絡方式',
+    'contactData': '聯絡資料',
     'option': {
       'gender': {
         'male': '男',
