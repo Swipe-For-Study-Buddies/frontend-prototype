@@ -11,6 +11,7 @@ import Typography from '@mui/material/Typography';
 import Chip from '@mui/material/Chip';
 import InputLabel from '@mui/material/InputLabel';
 import FormControl from '@mui/material/FormControl';
+import FormHelperText from '@mui/material/FormHelperText';
 import Select from '@mui/material/Select';
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
@@ -29,12 +30,12 @@ const contactOptions = [
 // TODO: 從 backend 把所有的 tag 撈回來
 const interestTags = [
   '養魚', '爬山', '逛街', '旅行', '烹飪', '看電影', '健身'
-].map(tag => ({name: tag, key: btoa(unescape(encodeURIComponent(tag.toLocaleLowerCase())))}))
+].map(tag => ({ name: tag, key: btoa(unescape(encodeURIComponent(tag.toLocaleLowerCase()))) }))
 const skillTags = [
   '養魚', '英文', '中文', '日文', '台語', 'C++', 'C#', 'Swift', 'Java', 'Javascript', 'Rust'
-].map(tag => ({name: tag, key: btoa(unescape(encodeURIComponent(tag.toLocaleLowerCase())))}))
+].map(tag => ({ name: tag, key: btoa(unescape(encodeURIComponent(tag.toLocaleLowerCase()))) }))
 
-const tagMapping = {interest: interestTags, skill: skillTags, wantingToLearn: skillTags}
+const tagMapping = { interest: interestTags, skill: skillTags, wantingToLearn: skillTags }
 
 const numberRule = /[^0-9]/g
 const groupProfiles = [
@@ -42,21 +43,18 @@ const groupProfiles = [
   { name: 'gender', type: 'select', options: ['male', 'female'] },
   { name: 'age', type: 'text', allowCharacter: numberRule },
   { name: 'job', type: 'text' },
-]
+].map(i => ({ ...i, required: i.required || false }))
 
 const groupTags = [
   { name: 'interest', type: 'popup' },
-  { name: 'skill', type: 'popup' },
-  { name: 'wantingToLearn', type: 'popup' },
-]
+  { name: 'skill', type: 'popup', required: true },
+  { name: 'wantingToLearn', type: 'popup', required: true },
+].map(i => ({ ...i, required: i.required || false }))
+
+const fields = [{ name: 'contacts', required: true }].concat(groupProfiles, groupTags)
 
 const Profile = () => {
   const { formatMessage } = useIntl()
-  // const [fields, setFields] = useState([
-  //   'name', 'gender', 'age', 'job',
-  //   'interest', 'skill', 'wantingToLearn',
-  //   'contacts'
-  // ])
   const [profileData, setProfileData] = useState({
     name: '',
     gender: '',
@@ -70,10 +68,26 @@ const Profile = () => {
   const [tagsDialog, setTagsDialog] = useState('');
 
   function onTagsChanged(tags) {
-    setProfileData(profile => ({...profile, [tagsDialog]: tags}))
+    setProfileData(profile => {
+      const newProfile = { ...profile, [tagsDialog]: tags }
+      if (tags.length > 0) {
+        newProfile[`${tagsDialog}_err`] = ''
+      }
+      return newProfile
+    })
   }
 
-  function updateProfileData({ name, type, allowCharacter, maxLength }, value) {
+  function validateField(field, value) {
+    if (field.required &&
+      ((typeof value === 'string' && value.trim() === '') ||
+        (Array.isArray(value) && value.length === 0))) {
+      return formatMessage({ id: 'form.isRequired' })
+    }
+    return ''
+  }
+
+  function updateProfileData(field, value) {
+    const { name, allowCharacter, maxLength } = field
     setProfileData(profile => {
       let newValue = value
       if (allowCharacter) {
@@ -85,25 +99,27 @@ const Profile = () => {
       if (newValue === undefined || profile[name] === newValue) {
         return profile;
       }
-      return { ...profile, [name]: newValue }
+
+      let err = validateField(field, value)
+      return { ...profile, [name]: newValue, [`${name}_err`]: err }
     })
   }
 
   function createField(field) {
     const { type, name: filedName, options, required = false } = field
-    const { [field.name]: value } = profileData
+    const { [filedName]: value, [`${filedName}_err`]: err } = profileData
 
     if (type === 'text') {
       return <TextField
         key={filedName}
-        required={field.required}
+        required={required}
         type="text"
         variant="outlined"
         label={formatMessage({ id: `profile.${filedName}` })}
         onChange={e => { updateProfileData(field, e.target.value) }}
         value={value}
-        // error={setProfileData[`${field.name}_err`] ? true : false}
-        // helperText={setProfileData[`${field.name}_err`]}
+        error={!!err}
+        helperText={err}
         fullWidth
       />
     } else if (type === 'select') {
@@ -116,8 +132,8 @@ const Profile = () => {
         label={formatMessage({ id: `profile.${filedName}` })}
         onChange={e => { updateProfileData(field, e.target.value) }}
         value={value}
-        // error={setProfileData[`${field.name}_err`] ? true : false}
-        // helperText={setProfileData[`${field.name}_err`]}
+        error={!!err}
+        helperText={err}
         fullWidth
       >
         {options.map((option) => (
@@ -128,13 +144,13 @@ const Profile = () => {
       </TextField>
     } else if (type === 'popup') {
       return <FormControl key={filedName} sx={{ m: 1 }}>
-        <InputLabel sx={{backgroundColor: '#fff', paddingLeft: .5, paddingRight: .5}}>{formatMessage({ id: `profile.${filedName}` })}</InputLabel>
+        <InputLabel error={!!err} required={required} sx={{ backgroundColor: '#fff', paddingLeft: .5, paddingRight: .5 }}>{formatMessage({ id: `profile.${filedName}` })}</InputLabel>
         <Select
           multiple
           value={value.map(v => v.name)}
-          onClick={(e) => {e.preventDefault();e.stopPropagation();setTagsDialog(filedName)}}
-          input={<OutlinedInput />}
-          SelectDisplayProps={{onMouseDown: (e) => {e.preventDefault()}}}
+          onClick={(e) => { e.preventDefault(); e.stopPropagation(); setTagsDialog(filedName) }}
+          input={<OutlinedInput error={!!err} />}
+          SelectDisplayProps={{ onMouseDown: (e) => { e.preventDefault() } }}
           renderValue={(selected) => (
             <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 0.5 }}>
               {selected.map((value) => (
@@ -143,8 +159,9 @@ const Profile = () => {
             </Box>
           )}
         >
-        <div />
+          <div />
         </Select>
+        {!!err && <FormHelperText error={!!err}>{err}</FormHelperText>}
       </FormControl>
     } else if (type === 'contacts') {
       return
@@ -156,17 +173,63 @@ const Profile = () => {
     setProfileData(profile => {
       const newContacts = [...profile.contacts]
       newContacts[index][field] = value
-      return {...profile, contacts: newContacts}
+      const newProfileData = { ...profile, contacts: newContacts }
+
+      // 檢查是否有至少一種聯絡方式
+      for (const contact of newContacts) {
+        const contactName = contact.contactName.trim()
+        const contactData = contact.contactData.trim()
+        if (contactName && contactData) {
+          delete newProfileData.contacts_err
+          break
+        }
+      }
+      return newProfileData
     })
   }
 
   function addContact() {
-    setProfileData(profile => ({...profile, contacts: [...profile.contacts, {contactName: '', contactData: ''}]}))
+    setProfileData(profile => ({ ...profile, contacts: [...profile.contacts, { contactName: '', contactData: '' }] }))
   }
 
+  console.log(JSON.stringify(profileData, null, 4))
+
   function onApply() {
-    // TODO: 檢查必填欄位, 整理欄位資料, 呼叫 backend API
-    // console.log(profileData)
+    // 檢查必填欄位, 整理欄位資料, 呼叫 backend API
+
+    // 先清掉沒有完整設定的 contact
+    // const data = structuredClone(profileData)
+    const data = JSON.parse(JSON.stringify(profileData))
+    for (let i = data.contacts.length - 1; i >= 0; --i) {
+      const contact = data.contacts[i]
+      const contactName = contact.contactName.trim()
+      const contactData = contact.contactData.trim()
+      if (!contactName || !contactData) {
+        data.contacts.splice(i, 1)
+      }
+    }
+    console.log(JSON.stringify(data, null, 4))
+
+    // 檢查必填欄位是否都填了值
+    const errors = {}
+    for (const field of fields) {
+      const err = validateField(field, data[field.name])
+      if (err) {
+        errors[`${field.name}_err`] = formatMessage({ id: 'form.isRequired' })
+      }
+    }
+    if (Object.keys(errors).length > 0) {
+      setProfileData({ ...profileData, ...errors })
+    }
+    for (const field of fields) {
+      if (data[`${field.name}_err`] !== undefined && data[`${field.name}_err`] !== '') {
+        return
+      }
+    }
+
+    // TODO: 到這邊已經可以 call API 把資料存下來了, 然後把使用者導向到 HOME 頁面.
+
+
   }
 
   return (
@@ -199,10 +262,16 @@ const Profile = () => {
               {groupTags.map(field => (
                 createField(field)
               ))}
-              <div style={{display: 'flex'}}>
-                <Typography component="h1" variant="h5" sx={{flexGrow: 1}}>
+              <div style={{ display: 'flex' }}>
+                <Typography component="h1" variant="h5">
                   <FormattedMessage id={'profile.contacts'} />
                 </Typography>
+                {!!profileData.contacts_err ?
+                  <FormHelperText error={!!profileData.contacts_err} sx={{ flexGrow: 1 }}>
+                    {formatMessage({ id: 'form.needContact' })}
+                  </FormHelperText> :
+                  <div style={{ flexGrow: 1 }}> </div>
+                }
                 <Tooltip title={formatMessage({ id: 'profile.addContact' })}>
                   <IconButton color="primary" onClick={addContact}>
                     <AddCircleIcon />
@@ -215,7 +284,7 @@ const Profile = () => {
                     sx={{ minWidth: '140px' }}
                     freeSolo
                     options={contactOptions.map((option) => option)}
-                    onInputChange={(e, v) => {updateContactData(index, 'contactName', v)}}
+                    onInputChange={(e, v) => { updateContactData(index, 'contactName', v) }}
                     renderInput={(params) =>
                       <TextField
                         {...params}
@@ -229,7 +298,7 @@ const Profile = () => {
                     required
                     type="text"
                     label={formatMessage({ id: 'profile.contactData' })}
-                    onChange={e => {updateContactData(index, 'contactData', e.target.value)}}
+                    onChange={e => { updateContactData(index, 'contactData', e.target.value) }}
                     value={contact.contactData}
                     fullWidth
                   />

@@ -1,7 +1,7 @@
 const i18n = {
   'profile': {
     'title': '個人資料',
-    'tags': '個人資料',
+    'tags': '標籤',
     'name': '姓名',
     'gender': '性別',
     'age': '年齡',
