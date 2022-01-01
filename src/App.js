@@ -27,16 +27,16 @@ const Container = styled('div')(({ theme }) => ({
   backgroundColor: '#b2b6f5',
   minHeight: 'calc(100vh - 64px)',
 
-  '::before': {
-    content: '""',
-    position: 'absolute',
-    top: '0px',
-    right: '0px',
-    bottom: '0px',
-    left: '0px',
-    height: '100%',
-    backgroundColor: 'rgba(255,255,255,0.4)'
-  },
+  // '::before': {
+  //   content: '""',
+  //   position: 'absolute',
+  //   top: '0px',
+  //   right: '0px',
+  //   bottom: '0px',
+  //   left: '0px',
+  //   height: '100%',
+  //   backgroundColor: 'rgba(255,255,255,0.4)'
+  // },
 }));
 
 function App() {
@@ -64,7 +64,7 @@ function App() {
 
   return (
     <>
-      <AppBar position="static" sx={{backgroundColor: 'rgba(178, 182, 245, 0.6)'}}>
+      <AppBar position="static" sx={{backgroundColor: 'rgba(178, 182, 245)'}}>
         <Toolbar>
           <IconButton
             size="large"
