@@ -4,7 +4,7 @@ const i18n = {
     'tags': '標籤',
     'name': '姓名',
     'gender': '性別',
-    'age': '年齡',
+    'birthday': '生日',
     'job': '身份',
     'interest': '興趣',
     'skill': '專長',

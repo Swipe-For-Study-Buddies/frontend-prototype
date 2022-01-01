@@ -1,5 +1,7 @@
-import React, { useState } from 'react';
+import React, { useState, useContext } from 'react';
 import { useIntl, FormattedMessage } from 'react-intl';
+import { useNavigate } from 'react-router-dom';
+import dayjs from 'dayjs';
 
 import OutlinedInput from '@mui/material/OutlinedInput';
 import Paper from '@mui/material/Paper';
@@ -20,7 +22,10 @@ import IconButton from '@mui/material/IconButton';
 import AddCircleIcon from '@mui/icons-material/AddCircle';
 import Tooltip from '@mui/material/Tooltip';
 
+import MuiDatePicker from './MuiDatePicker';
 import SelectTagsDialog from './SelectTagsDialog';
+import UserService from '../services/user.service';
+import ContextStore from '../common/context';
 
 // TODO: 從 backend 把所有的聯絡方式選項撈回來
 const contactOptions = [
@@ -37,11 +42,11 @@ const skillTags = [
 
 const tagMapping = { interest: interestTags, skill: skillTags, wantingToLearn: skillTags }
 
-const numberRule = /[^0-9]/g
+// const numberRule = /[^0-9]/g
 const groupProfiles = [
   { name: 'name', type: 'text', required: true },
   { name: 'gender', type: 'select', options: ['male', 'female'] },
-  { name: 'age', type: 'text', allowCharacter: numberRule },
+  { name: 'birthday', type: 'date', required: true },
   { name: 'job', type: 'text' },
 ].map(i => ({ ...i, required: i.required || false }))
 
@@ -54,11 +59,13 @@ const groupTags = [
 const fields = [{ name: 'contacts', required: true }].concat(groupProfiles, groupTags)
 
 const Profile = () => {
+  const navigate = useNavigate();
+  const { setCurrentUser } = useContext(ContextStore)
   const { formatMessage } = useIntl()
   const [profileData, setProfileData] = useState({
     name: '',
     gender: '',
-    age: '',
+    birthday: null,
     job: '',
     interest: [],
     skill: [],
@@ -83,6 +90,19 @@ const Profile = () => {
         (Array.isArray(value) && value.length === 0))) {
       return formatMessage({ id: 'form.isRequired' })
     }
+
+    if (field.name === 'birthday') {
+      if (value === null) {
+        return formatMessage({ id: 'form.isRequired' })
+      } else if (value.toString() === 'Invalid Date') {
+        return formatMessage({ id: 'form.dateFormatError' })
+      } else {
+        if (dayjs(value).format('YYYY-MM-DD') > dayjs().format('YYYY-MM-DD')) {
+          return formatMessage({ id: 'form.dateAfterToday' })
+        }
+      }
+    }
+
     return ''
   }
 
@@ -163,8 +183,17 @@ const Profile = () => {
         </Select>
         {!!err && <FormHelperText error={!!err}>{err}</FormHelperText>}
       </FormControl>
-    } else if (type === 'contacts') {
-      return
+    } else if (type === 'date') {
+      return <MuiDatePicker
+        key={filedName}
+        fullWidth
+        label={formatMessage({ id: `profile.${filedName}` })}
+        value={value}
+        onChange={date => updateProfileData(field, date)}
+        invalidDateMessage={formatMessage({ id: 'form.dateFormatError' })}
+        maxDateMessage={formatMessage({ id: 'form.dateAfterToday' })}
+        maxDate={new Date()}
+      />
     }
     return null
   }
@@ -192,8 +221,6 @@ const Profile = () => {
     setProfileData(profile => ({ ...profile, contacts: [...profile.contacts, { contactName: '', contactData: '' }] }))
   }
 
-  console.log(JSON.stringify(profileData, null, 4))
-
   function onApply() {
     // 檢查必填欄位, 整理欄位資料, 呼叫 backend API
 
@@ -208,7 +235,6 @@ const Profile = () => {
         data.contacts.splice(i, 1)
       }
     }
-    console.log(JSON.stringify(data, null, 4))
 
     // 檢查必填欄位是否都填了值
     const errors = {}
@@ -227,9 +253,25 @@ const Profile = () => {
       }
     }
 
-    // TODO: 到這邊已經可以 call API 把資料存下來了, 然後把使用者導向到 HOME 頁面.
+    // 整理 tags 欄位的資料
+    for (const field of groupTags) {
+      data[field.name] = data[field.name].map(tag => tag.name)
+    }
 
+    // 移除 error message
+    Object.keys(data).forEach(key => {
+      if (key.endsWith('_err')) {
+        delete data[key]
+      }
+    })
 
+    // 到這邊已經可以 call API 把資料存下來了, 然後把使用者導向到 HOME 頁面.
+    UserService.setUserProfile(data).then(profile => {
+      setCurrentUser(profile)
+      navigate('/', { replace: true });
+    }).catch(error => {
+      console.log(error)
+    })
   }
 
   return (

@@ -3,6 +3,7 @@ import resetPassword from './resetPassword';
 import profile from './profile';
 import button from './button';
 import form from './form';
+import datePicker from './datePicker';
 import selectTagsDialog from './selectTagsDialog';
 
 function flattenObject(ob, prefix = '') {
@@ -29,6 +30,7 @@ const i18n = {
   ...profile,
   ...button,
   ...form,
+  ...datePicker,
   ...selectTagsDialog,
 };
 
