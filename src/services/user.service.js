@@ -7,14 +7,22 @@ const USER_API_URL = `${API_URL}user/`
 const getUserProfile = async () => {
   try {
     const res = await axios.get(USER_API_URL + 'getUserProfile', { headers: authHeader() })
-    return res
+    return res.data
   } catch (error) {
     return
   }
 };
 
-const setUserProfile = async () => {
-  // TODO: 實作 setUserProfile API
+const setUserProfile = async (profile) => {
+  try {
+    const res = await axios.post(
+      USER_API_URL + 'setUserProfile',
+      profile,
+      { headers: authHeader() })
+    return res.data
+  } catch (error) {
+    return
+  }
 };
 
 const exportedObject = {
