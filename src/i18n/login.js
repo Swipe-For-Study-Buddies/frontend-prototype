@@ -20,5 +20,5 @@ const i18n = {
       'confirmPassword': '兩次輸入的密碼不同',
     }
   }
-}
-export default i18n
+};
+export default i18n;

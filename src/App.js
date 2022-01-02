@@ -14,7 +14,7 @@ import Menu from '@mui/material/Menu';
 
 import './App.scss';
 import Home from './components/Home';
-import Profile from "./components/Profile";
+import Profile from './components/Profile';
 import AuthService from './services/auth.service';
 import ContextStore from './common/context';
 

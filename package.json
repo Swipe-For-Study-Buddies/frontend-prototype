@@ -30,7 +30,12 @@
     "extends": [
       "react-app",
       "react-app/jest"
-    ]
+    ],
+    "rules": {
+      "indent": ["error", 2],
+      "quotes": ["error", "single"],
+      "semi": "error"
+    }
   },
   "browserslist": {
     "production": [

@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useContext } from 'react'
+import React, { useState, useEffect, useContext } from 'react';
 import { useIntl, FormattedMessage } from 'react-intl';
 
 import Avatar from '@mui/material/Avatar';
@@ -28,7 +28,7 @@ function Copyright() {
 }
 
 function LoginForm() {
-  const { formatMessage } = useIntl()
+  const { formatMessage } = useIntl();
   const [page, setPage] = useState('login');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -36,17 +36,17 @@ function LoginForm() {
   const [snackPack, setSnackPack] = useState([]);
   const [openMessage, setOpenMessage] = useState(false);
   const [messageInfo, setMessageInfo] = useState(undefined);
-  const [error, setError] = useState({})
-  const { setCurrentUser } = useContext(ContextStore)
+  const [error, setError] = useState({});
+  const { setCurrentUser } = useContext(ContextStore);
 
-  const emailError = error.email ?? ''
-  const passwordError = error.password ?? ''
-  const confirmPasswordError = error.confirmPassword ?? ''
+  const emailError = error.email ?? '';
+  const passwordError = error.password ?? '';
+  const confirmPasswordError = error.confirmPassword ?? '';
 
   useEffect(() => {
     UserService.getUserProfile().then(profile => {
-      setCurrentUser(profile)
-    })
+      setCurrentUser(profile);
+    });
   }, [setCurrentUser]);
 
   useEffect(() => {
@@ -64,25 +64,25 @@ function LoginForm() {
   async function onSubmit() {
     if (page === 'login') {
       try {
-        const profile = await AuthService.login({ email, password })
-        setCurrentUser(profile)
+        const profile = await AuthService.login({ email, password });
+        setCurrentUser(profile);
       } catch (err) {
-        const msg = err?.response?.data?.message ?? ''
+        const msg = err?.response?.data?.message ?? '';
         if (msg === 'UserNotFound') {
-          setError({ email: formatMessage({ id: 'login.error.email' }) })
+          setError({ email: formatMessage({ id: 'login.error.email' }) });
         } else if (msg === 'WrongPassword') {
-          setError({ password: formatMessage({ id: 'login.error.password' }) })
+          setError({ password: formatMessage({ id: 'login.error.password' }) });
         }
       }
     } else if (page === 'signup') {
       try {
-        const profile = await AuthService.register({ email, password })
-        setCurrentUser(profile)
+        const profile = await AuthService.register({ email, password });
+        setCurrentUser(profile);
       } catch (ex) {
       }
     } else {
       try {
-        await AuthService.getResetPasswordToken({ email })
+        await AuthService.getResetPasswordToken({ email });
         setSnackPack((prev) => [
           ...prev,
           {
@@ -90,22 +90,22 @@ function LoginForm() {
             key: new Date().getTime()
           }
         ]);
-        setPage('login')
+        setPage('login');
       } catch (err) {
-        console.log(err)
-        const msg = err?.response?.data?.message ?? ''
+        console.log(err);
+        const msg = err?.response?.data?.message ?? '';
         if (msg === 'UserNotFound') {
-          setError({ email: formatMessage({ id: 'login.error.email' }) })
+          setError({ email: formatMessage({ id: 'login.error.email' }) });
         }
       }
     }
   }
 
   function switchPage(e, newPage) {
-    e.stopPropagation()
-    e.preventDefault()
-    setPage(newPage)
-    setError({})
+    e.stopPropagation();
+    e.preventDefault();
+    setPage(newPage);
+    setError({});
   }
 
   const handleMessageClose = (event, reason) => {
@@ -124,18 +124,18 @@ function LoginForm() {
       return (email !== '' &&
         !emailError &&
         password !== '' &&
-        !passwordError)
+        !passwordError);
     } else if (page === 'signup') {
       return (email !== '' &&
         !emailError &&
         password !== '' &&
         !passwordError &&
         confirmPassword !== '' &&
-        !confirmPasswordError)
+        !confirmPasswordError);
     } else if (page === 'resetPassword') {
-      return (email !== '' && !emailError)
+      return (email !== '' && !emailError);
     }
-    return false
+    return false;
   };
 
   return (
@@ -194,17 +194,17 @@ function LoginForm() {
               autoComplete="email"
               onChange={e => {
                 if (e.target.value === '') {
-                  setError(e => ({ ...e, email: formatMessage({ id: 'login.error.emptyEmail' }) }))
+                  setError(e => ({ ...e, email: formatMessage({ id: 'login.error.emptyEmail' }) }));
                 } else if (emailError !== '') {
-                  setError(e => ({ ...e, email: '' }))
+                  setError(e => ({ ...e, email: '' }));
                 }
                 // TODO: 檢查是否符合 email 格式
-                setEmail(e.target.value)
+                setEmail(e.target.value);
               }}
               onKeyDown={e => {
                 if (e.key === 'Enter') {
-                  e.stopPropagation()
-                  e.preventDefault()
+                  e.stopPropagation();
+                  e.preventDefault();
                 }
               }}
               autoFocus
@@ -223,15 +223,15 @@ function LoginForm() {
               autoComplete={page === 'login' ? 'current-password' : ''}
               onChange={e => {
                 if (e.target.value === '') {
-                  setError(e => ({ ...e, password: formatMessage({ id: 'login.error.emptyPassword' }) }))
+                  setError(e => ({ ...e, password: formatMessage({ id: 'login.error.emptyPassword' }) }));
                 } else if (passwordError !== '') {
-                  setError(e => ({ ...e, password: '' }))
+                  setError(e => ({ ...e, password: '' }));
                 }
-                setPassword(e.target.value)
+                setPassword(e.target.value);
               }}
               onKeyUp={e => {
                 if (e.key === 'Enter') {
-                  onSubmit()
+                  onSubmit();
                 }
               }}
               error={!!passwordError}
@@ -248,15 +248,15 @@ function LoginForm() {
               id="confirmPassword"
               onChange={e => {
                 if (e.target.value !== password) {
-                  setError(e => ({ ...e, confirmPassword: formatMessage({ id: 'login.error.confirmPassword' }) }))
+                  setError(e => ({ ...e, confirmPassword: formatMessage({ id: 'login.error.confirmPassword' }) }));
                 } else {
-                  setError(e => ({ ...e, confirmPassword: '' }))
+                  setError(e => ({ ...e, confirmPassword: '' }));
                 }
-                setConfirmPassword(e.target.value)
+                setConfirmPassword(e.target.value);
               }}
               onKeyUp={e => {
                 if (e.key === 'Enter') {
-                  onSubmit()
+                  onSubmit();
                 }
               }}
               error={!!confirmPasswordError}

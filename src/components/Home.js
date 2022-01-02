@@ -1,10 +1,10 @@
 import React, { useContext } from 'react';
 
-import AuthService from "../services/auth.service";
+import AuthService from '../services/auth.service';
 import ContextStore from '../common/context';
 
 const Home = () => {
-  const { setCurrentUser } = useContext(ContextStore)
+  const { setCurrentUser } = useContext(ContextStore);
   function logout() {
     AuthService.logout();
     setCurrentUser(undefined);

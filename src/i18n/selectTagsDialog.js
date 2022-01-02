@@ -4,5 +4,5 @@ const i18n = {
     'selectedTags': '已選擇的標籤: ',
     'search': '搜尋標籤',
   }
-}
-export default i18n
+};
+export default i18n;

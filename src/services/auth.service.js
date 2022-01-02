@@ -1,27 +1,27 @@
 import axios from 'axios';
 import { API_URL } from '../common/constants.js';
 
-const AUTH_API_URL = `${API_URL}auth/`
+const AUTH_API_URL = `${API_URL}auth/`;
 
 const register = async ({ email, password }) => {
   // TODO: 加入 error handling
   const res = await axios.post(AUTH_API_URL + 'register', {
     email,
     password,
-  })
-  const { token } = res.data
-  localStorage.setItem('accessToken', token)
-  return {}
+  });
+  const { token } = res.data;
+  localStorage.setItem('accessToken', token);
+  return {};
 };
 
 const login = async ({ email, password }) => {
   const res = await axios.post(AUTH_API_URL + 'login', {
     email,
     password,
-  })
-  const { token, ...profile } = res.data
-  localStorage.setItem('accessToken', token)
-  return profile
+  });
+  const { token, ...profile } = res.data;
+  localStorage.setItem('accessToken', token);
+  return profile;
 };
 
 const logout = () => {
@@ -32,15 +32,15 @@ const getResetPasswordToken = async ({ email }) => {
   // 取得重設密碼用的 URL (寄到信箱)
   await axios.post(AUTH_API_URL + 'getResetPasswordToken', {
     email
-  })
-  return
+  });
+  return;
 };
 
 const verifyResetPasswordToken = async ({ token }) => {
   await axios.post(AUTH_API_URL + 'verifyResetPasswordToken', {
     token
-  })
-  return
+  });
+  return;
 };
 
 const resetPassword = async ({ password, token }) => {
@@ -48,8 +48,8 @@ const resetPassword = async ({ password, token }) => {
   await axios.post(AUTH_API_URL + 'resetPassword', {
     password,
     token
-  })
-  return
+  });
+  return;
 };
 
 const exportedObject = {
@@ -59,6 +59,6 @@ const exportedObject = {
   getResetPasswordToken,
   verifyResetPasswordToken,
   resetPassword,
-}
+};
 
-export default exportedObject
+export default exportedObject;

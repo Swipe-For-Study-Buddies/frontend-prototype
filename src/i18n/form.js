@@ -5,5 +5,5 @@ const i18n = {
     'dateFormatError': '無效的日期格式',
     'dateAfterToday': '日期不得大於今日',
   }
-}
-export default i18n
+};
+export default i18n;

@@ -4,5 +4,5 @@ const i18n = {
     'ok': '套用',
     'save': '儲存'
   }
-}
-export default i18n
+};
+export default i18n;

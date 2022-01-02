@@ -3,5 +3,5 @@ const i18n = {
     'previousMonth': '前一個月份',
     'nextMonth': '下一個月份',
   }
-}
-export default i18n
+};
+export default i18n;

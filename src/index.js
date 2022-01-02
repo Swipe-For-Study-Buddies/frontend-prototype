@@ -7,15 +7,15 @@ import Login from './components/Login';
 import ResetPassword from './components/ResetPassword';
 import './index.css';
 import App from './App';
-import i18n from './i18n/i18n'
+import i18n from './i18n/i18n';
 // import reportWebVitals from './reportWebVitals';
 import ContextStore from './common/context';
 
-const cache = createIntlCache()
+const cache = createIntlCache();
 const intl = createIntl({
   locale: 'zh-TW',
   messages: i18n
-}, cache)
+}, cache);
 
 function Root() {
   const [currentUser, setCurrentUser] = useState(undefined);
@@ -34,7 +34,7 @@ function Root() {
         </Routes>
       )}
     </ContextStore.Provider>
-  )
+  );
 }
 
 ReactDOM.render(

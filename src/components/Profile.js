@@ -30,17 +30,17 @@ import ContextStore from '../common/context';
 // TODO: 從 backend 把所有的聯絡方式選項撈回來
 const contactOptions = [
   'Email', 'FaceBook', 'Line', 'Telegram', 'WhatsApp', '電話'
-]
+];
 
 // TODO: 從 backend 把所有的 tag 撈回來
 const interestTags = [
   '養魚', '爬山', '逛街', '旅行', '烹飪', '看電影', '健身'
-].map(tag => ({ name: tag, key: btoa(unescape(encodeURIComponent(tag.toLocaleLowerCase()))) }))
+].map(tag => ({ name: tag, key: btoa(unescape(encodeURIComponent(tag.toLocaleLowerCase()))) }));
 const skillTags = [
   '養魚', '英文', '中文', '日文', '台語', 'C++', 'C#', 'Swift', 'Java', 'Javascript', 'Rust'
-].map(tag => ({ name: tag, key: btoa(unescape(encodeURIComponent(tag.toLocaleLowerCase()))) }))
+].map(tag => ({ name: tag, key: btoa(unescape(encodeURIComponent(tag.toLocaleLowerCase()))) }));
 
-const tagMapping = { interest: interestTags, skill: skillTags, wantingToLearn: skillTags }
+const tagMapping = { interest: interestTags, skill: skillTags, wantingToLearn: skillTags };
 
 // const numberRule = /[^0-9]/g
 const groupProfiles = [
@@ -48,20 +48,20 @@ const groupProfiles = [
   { name: 'gender', type: 'select', options: ['male', 'female'] },
   { name: 'birthday', type: 'date', required: true },
   { name: 'job', type: 'text' },
-].map(i => ({ ...i, required: i.required || false }))
+].map(i => ({ ...i, required: i.required || false }));
 
 const groupTags = [
   { name: 'interest', type: 'popup' },
   { name: 'skill', type: 'popup', required: true },
   { name: 'wantingToLearn', type: 'popup', required: true },
-].map(i => ({ ...i, required: i.required || false }))
+].map(i => ({ ...i, required: i.required || false }));
 
-const fields = [{ name: 'contacts', required: true }].concat(groupProfiles, groupTags)
+const fields = [{ name: 'contacts', required: true }].concat(groupProfiles, groupTags);
 
 const Profile = () => {
   const navigate = useNavigate();
-  const { setCurrentUser } = useContext(ContextStore)
-  const { formatMessage } = useIntl()
+  const { setCurrentUser } = useContext(ContextStore);
+  const { formatMessage } = useIntl();
   const [profileData, setProfileData] = useState({
     name: '',
     gender: '',
@@ -71,63 +71,63 @@ const Profile = () => {
     skill: [],
     wantingToLearn: [],
     contacts: []
-  })
+  });
   const [tagsDialog, setTagsDialog] = useState('');
 
   function onTagsChanged(tags) {
     setProfileData(profile => {
-      const newProfile = { ...profile, [tagsDialog]: tags }
+      const newProfile = { ...profile, [tagsDialog]: tags };
       if (tags.length > 0) {
-        newProfile[`${tagsDialog}_err`] = ''
+        newProfile[`${tagsDialog}_err`] = '';
       }
-      return newProfile
-    })
+      return newProfile;
+    });
   }
 
   function validateField(field, value) {
     if (field.required &&
       ((typeof value === 'string' && value.trim() === '') ||
         (Array.isArray(value) && value.length === 0))) {
-      return formatMessage({ id: 'form.isRequired' })
+      return formatMessage({ id: 'form.isRequired' });
     }
 
     if (field.name === 'birthday') {
       if (value === null) {
-        return formatMessage({ id: 'form.isRequired' })
+        return formatMessage({ id: 'form.isRequired' });
       } else if (value.toString() === 'Invalid Date') {
-        return formatMessage({ id: 'form.dateFormatError' })
+        return formatMessage({ id: 'form.dateFormatError' });
       } else {
         if (dayjs(value).format('YYYY-MM-DD') > dayjs().format('YYYY-MM-DD')) {
-          return formatMessage({ id: 'form.dateAfterToday' })
+          return formatMessage({ id: 'form.dateAfterToday' });
         }
       }
     }
 
-    return ''
+    return '';
   }
 
   function updateProfileData(field, value) {
-    const { name, allowCharacter, maxLength } = field
+    const { name, allowCharacter, maxLength } = field;
     setProfileData(profile => {
-      let newValue = value
+      let newValue = value;
       if (allowCharacter) {
-        newValue = newValue.replace(allowCharacter, '')
+        newValue = newValue.replace(allowCharacter, '');
       }
       if (maxLength) {
-        newValue = newValue.substring(0, maxLength)
+        newValue = newValue.substring(0, maxLength);
       }
       if (newValue === undefined || profile[name] === newValue) {
         return profile;
       }
 
-      let err = validateField(field, value)
-      return { ...profile, [name]: newValue, [`${name}_err`]: err }
-    })
+      let err = validateField(field, value);
+      return { ...profile, [name]: newValue, [`${name}_err`]: err };
+    });
   }
 
   function createField(field) {
-    const { type, name: filedName, options, required = false } = field
-    const { [filedName]: value, [`${filedName}_err`]: err } = profileData
+    const { type, name: filedName, options, required = false } = field;
+    const { [filedName]: value, [`${filedName}_err`]: err } = profileData;
 
     if (type === 'text') {
       return <TextField
@@ -136,12 +136,12 @@ const Profile = () => {
         type="text"
         variant="outlined"
         label={formatMessage({ id: `profile.${filedName}` })}
-        onChange={e => { updateProfileData(field, e.target.value) }}
+        onChange={e => { updateProfileData(field, e.target.value); }}
         value={value}
         error={!!err}
         helperText={err}
         fullWidth
-      />
+      />;
     } else if (type === 'select') {
       return <TextField
         select
@@ -150,7 +150,7 @@ const Profile = () => {
         type="text"
         variant="outlined"
         label={formatMessage({ id: `profile.${filedName}` })}
-        onChange={e => { updateProfileData(field, e.target.value) }}
+        onChange={e => { updateProfileData(field, e.target.value); }}
         value={value}
         error={!!err}
         helperText={err}
@@ -161,16 +161,16 @@ const Profile = () => {
             {formatMessage({ id: `profile.option.${filedName}.${option}` })}
           </MenuItem>
         ))}
-      </TextField>
+      </TextField>;
     } else if (type === 'popup') {
       return <FormControl key={filedName} sx={{ m: 1 }}>
         <InputLabel error={!!err} required={required} sx={{ backgroundColor: '#fff', paddingLeft: .5, paddingRight: .5 }}>{formatMessage({ id: `profile.${filedName}` })}</InputLabel>
         <Select
           multiple
           value={value.map(v => v.name)}
-          onClick={(e) => { e.preventDefault(); e.stopPropagation(); setTagsDialog(filedName) }}
+          onClick={(e) => { e.preventDefault(); e.stopPropagation(); setTagsDialog(filedName); }}
           input={<OutlinedInput error={!!err} />}
-          SelectDisplayProps={{ onMouseDown: (e) => { e.preventDefault() } }}
+          SelectDisplayProps={{ onMouseDown: (e) => { e.preventDefault(); } }}
           renderValue={(selected) => (
             <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 0.5 }}>
               {selected.map((value) => (
@@ -182,7 +182,7 @@ const Profile = () => {
           <div />
         </Select>
         {!!err && <FormHelperText error={!!err}>{err}</FormHelperText>}
-      </FormControl>
+      </FormControl>;
     } else if (type === 'date') {
       return <MuiDatePicker
         key={filedName}
@@ -193,32 +193,32 @@ const Profile = () => {
         invalidDateMessage={formatMessage({ id: 'form.dateFormatError' })}
         maxDateMessage={formatMessage({ id: 'form.dateAfterToday' })}
         maxDate={new Date()}
-      />
+      />;
     }
-    return null
+    return null;
   }
 
   function updateContactData(index, field, value) {
     setProfileData(profile => {
-      const newContacts = [...profile.contacts]
-      newContacts[index][field] = value
-      const newProfileData = { ...profile, contacts: newContacts }
+      const newContacts = [...profile.contacts];
+      newContacts[index][field] = value;
+      const newProfileData = { ...profile, contacts: newContacts };
 
       // 檢查是否有至少一種聯絡方式
       for (const contact of newContacts) {
-        const contactName = contact.contactName.trim()
-        const contactData = contact.contactData.trim()
+        const contactName = contact.contactName.trim();
+        const contactData = contact.contactData.trim();
         if (contactName && contactData) {
-          delete newProfileData.contacts_err
-          break
+          delete newProfileData.contacts_err;
+          break;
         }
       }
-      return newProfileData
-    })
+      return newProfileData;
+    });
   }
 
   function addContact() {
-    setProfileData(profile => ({ ...profile, contacts: [...profile.contacts, { contactName: '', contactData: '' }] }))
+    setProfileData(profile => ({ ...profile, contacts: [...profile.contacts, { contactName: '', contactData: '' }] }));
   }
 
   function onApply() {
@@ -226,52 +226,52 @@ const Profile = () => {
 
     // 先清掉沒有完整設定的 contact
     // const data = structuredClone(profileData)
-    const data = JSON.parse(JSON.stringify(profileData))
+    const data = JSON.parse(JSON.stringify(profileData));
     for (let i = data.contacts.length - 1; i >= 0; --i) {
-      const contact = data.contacts[i]
-      const contactName = contact.contactName.trim()
-      const contactData = contact.contactData.trim()
+      const contact = data.contacts[i];
+      const contactName = contact.contactName.trim();
+      const contactData = contact.contactData.trim();
       if (!contactName || !contactData) {
-        data.contacts.splice(i, 1)
+        data.contacts.splice(i, 1);
       }
     }
 
     // 檢查必填欄位是否都填了值
-    const errors = {}
+    const errors = {};
     for (const field of fields) {
-      const err = validateField(field, data[field.name])
+      const err = validateField(field, data[field.name]);
       if (err) {
-        errors[`${field.name}_err`] = formatMessage({ id: 'form.isRequired' })
+        errors[`${field.name}_err`] = formatMessage({ id: 'form.isRequired' });
       }
     }
     if (Object.keys(errors).length > 0) {
-      setProfileData({ ...profileData, ...errors })
+      setProfileData({ ...profileData, ...errors });
     }
     for (const field of fields) {
       if (data[`${field.name}_err`] !== undefined && data[`${field.name}_err`] !== '') {
-        return
+        return;
       }
     }
 
     // 整理 tags 欄位的資料
     for (const field of groupTags) {
-      data[field.name] = data[field.name].map(tag => tag.name)
+      data[field.name] = data[field.name].map(tag => tag.name);
     }
 
     // 移除 error message
     Object.keys(data).forEach(key => {
       if (key.endsWith('_err')) {
-        delete data[key]
+        delete data[key];
       }
-    })
+    });
 
     // 到這邊已經可以 call API 把資料存下來了, 然後把使用者導向到 HOME 頁面.
     UserService.setUserProfile(data).then(profile => {
-      setCurrentUser(profile)
+      setCurrentUser(profile);
       navigate('/', { replace: true });
     }).catch(error => {
-      console.log(error)
-    })
+      console.log(error);
+    });
   }
 
   return (
@@ -326,7 +326,7 @@ const Profile = () => {
                     sx={{ minWidth: '140px' }}
                     freeSolo
                     options={contactOptions.map((option) => option)}
-                    onInputChange={(e, v) => { updateContactData(index, 'contactName', v) }}
+                    onInputChange={(e, v) => { updateContactData(index, 'contactName', v); }}
                     renderInput={(params) =>
                       <TextField
                         {...params}
@@ -340,7 +340,7 @@ const Profile = () => {
                     required
                     type="text"
                     label={formatMessage({ id: 'profile.contactData' })}
-                    onChange={e => { updateContactData(index, 'contactData', e.target.value) }}
+                    onChange={e => { updateContactData(index, 'contactData', e.target.value); }}
                     value={contact.contactData}
                     fullWidth
                   />

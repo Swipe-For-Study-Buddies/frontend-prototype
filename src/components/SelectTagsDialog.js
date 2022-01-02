@@ -12,35 +12,35 @@ import SearchIcon from '@mui/icons-material/Search';
 import TextField from '@mui/material/TextField';
 
 function SelectTagsDialog({ handleSave, handleClose, tags = [], defaultSelectedItems = [] }) {
-  const { formatMessage } = useIntl()
-  const [selectedTags, setSelectedTags] = useState(defaultSelectedItems)
-  const [filterText, setFilterText] = useState('')
-  const queryText = filterText.trim().toLowerCase()
+  const { formatMessage } = useIntl();
+  const [selectedTags, setSelectedTags] = useState(defaultSelectedItems);
+  const [filterText, setFilterText] = useState('');
+  const queryText = filterText.trim().toLowerCase();
 
   const selectedTagsMapping = useRef(defaultSelectedItems.reduce((acc, cur) => {
     acc[cur.key] = true;
-    return acc
-  }, {}))
+    return acc;
+  }, {}));
   const onApply = () => {
-    handleSave([...selectedTags])
-    handleClose()
-  }
+    handleSave([...selectedTags]);
+    handleClose();
+  };
 
   function addTag(tag) {
     if (!selectedTagsMapping.current[tag.key] ) {
-      selectedTagsMapping.current[tag.key] = true
+      selectedTagsMapping.current[tag.key] = true;
     }
-    setSelectedTags(st => [...st, {...tag}])
+    setSelectedTags(st => [...st, {...tag}]);
   }
 
   function removeTag(tag, index) {
     if (selectedTagsMapping.current[tag.key]) {
-      delete selectedTagsMapping.current[tag.key]
+      delete selectedTagsMapping.current[tag.key];
       setSelectedTags(st => {
-        const newArray = [...st]
-        newArray.splice(index, 1)
-        return newArray
-      })
+        const newArray = [...st];
+        newArray.splice(index, 1);
+        return newArray;
+      });
     }
   }
 
@@ -79,14 +79,14 @@ function SelectTagsDialog({ handleSave, handleClose, tags = [], defaultSelectedI
           <Divider sx={{ marginTop: 1, marginBottom: 1 }} />
           {tags.filter(tag => !selectedTagsMapping.current[tag.key])
             .filter(tag => !queryText || tag.name.toLowerCase().includes(queryText)).map(tag => (
-            <Chip
-              sx={{ marginRight: 1, marginBottom: 0.5 }}
-              label={tag.name}
-              key={tag.key}
-              variant="outlined"
-              onClick={() => addTag(tag)}
-            />
-          ))}
+              <Chip
+                sx={{ marginRight: 1, marginBottom: 0.5 }}
+                label={tag.name}
+                key={tag.key}
+                variant="outlined"
+                onClick={() => addTag(tag)}
+              />
+            ))}
         </div>
       </DialogContent>
       <DialogActions>

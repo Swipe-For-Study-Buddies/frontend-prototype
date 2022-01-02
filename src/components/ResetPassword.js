@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect } from 'react';
 import { useIntl, FormattedMessage } from 'react-intl';
 import { useParams, useNavigate } from 'react-router-dom';
 
@@ -36,23 +36,23 @@ function ResetPassword() {
   const [snackPack, setSnackPack] = useState([]);
   const [openMessage, setOpenMessage] = useState(false);
   const [messageInfo, setMessageInfo] = useState(undefined);
-  const [error, setError] = useState({})
+  const [error, setError] = useState({});
 
-  const passwordError = error.password ?? ''
-  const confirmPasswordError = error.confirmPassword ?? ''
+  const passwordError = error.password ?? '';
+  const confirmPasswordError = error.confirmPassword ?? '';
 
   useEffect(() => {
     if (token) {
       AuthService.verifyResetPasswordToken({ token }).then(() => {
-        setPage('resetPassword')
+        setPage('resetPassword');
       }).catch(err => {
-        const msg = err?.response?.data?.message ?? ''
+        const msg = err?.response?.data?.message ?? '';
         if (msg === 'InvalidToken') {
-          setPage('invalidToken')
+          setPage('invalidToken');
         } else if (msg === 'TokenExpired') {
-          setPage('tokenExpired')
+          setPage('tokenExpired');
         }
-      })
+      });
     }
   }, [token]);
 
@@ -71,7 +71,7 @@ function ResetPassword() {
   async function onSubmit() {
     if (page === 'resetPassword') {
       try {
-        await AuthService.resetPassword({ password, token })
+        await AuthService.resetPassword({ password, token });
         // TODO: 切到登入頁, 顯示訊息
         setSnackPack((prev) => [
           ...prev,
@@ -83,20 +83,20 @@ function ResetPassword() {
         navigate('/', { replace: true });
         // setCurrentUser(profile)
       } catch (err) {
-        const msg = err?.response?.data?.message ?? ''
+        const msg = err?.response?.data?.message ?? '';
         if (msg === 'InvalidToken') {
-          setPage('invalidToken')
+          setPage('invalidToken');
         } else if (msg === 'TokenExpired') {
-          setPage('tokenExpired')
+          setPage('tokenExpired');
         }
       }
     }
   }
 
   function switchPage(e, newPage) {
-    e.stopPropagation()
-    e.preventDefault()
-    setPage(newPage)
+    e.stopPropagation();
+    e.preventDefault();
+    setPage(newPage);
   }
 
   const handleMessageClose = (event, reason) => {
@@ -115,9 +115,9 @@ function ResetPassword() {
       return (password !== '' &&
         !passwordError &&
         confirmPassword !== '' &&
-        !confirmPasswordError)
+        !confirmPasswordError);
     }
-    return false
+    return false;
   };
 
   return (
@@ -180,15 +180,15 @@ function ResetPassword() {
               id="password"
               onChange={e => {
                 if (e.target.value === '') {
-                  setError(e => ({ ...e, password: formatMessage({ id: 'resetPassword.error.emptyPassword' }) }))
+                  setError(e => ({ ...e, password: formatMessage({ id: 'resetPassword.error.emptyPassword' }) }));
                 } else if (passwordError !== '') {
-                  setError(e => ({ ...e, password: '' }))
+                  setError(e => ({ ...e, password: '' }));
                 }
-                setPassword(e.target.value)
+                setPassword(e.target.value);
               }}
               onKeyUp={e => {
                 if (e.key === 'Enter') {
-                  onSubmit()
+                  onSubmit();
                 }
               }}
               error={!!passwordError}
@@ -205,15 +205,15 @@ function ResetPassword() {
               id="confirmPassword"
               onChange={e => {
                 if (e.target.value !== password) {
-                  setError(e => ({ ...e, confirmPassword: formatMessage({ id: 'resetPassword.error.confirmPassword' }) }))
+                  setError(e => ({ ...e, confirmPassword: formatMessage({ id: 'resetPassword.error.confirmPassword' }) }));
                 } else {
-                  setError(e => ({ ...e, confirmPassword: '' }))
+                  setError(e => ({ ...e, confirmPassword: '' }));
                 }
-                setConfirmPassword(e.target.value)
+                setConfirmPassword(e.target.value);
               }}
               onKeyUp={e => {
                 if (e.key === 'Enter') {
-                  onSubmit()
+                  onSubmit();
                 }
               }}
               error={!!confirmPasswordError}
