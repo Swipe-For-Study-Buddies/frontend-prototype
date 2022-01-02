@@ -30,7 +30,7 @@ function SelectTagsDialog({ handleSave, handleClose, tags = [], defaultSelectedI
     if (!selectedTagsMapping.current[tag.key] ) {
       selectedTagsMapping.current[tag.key] = true;
     }
-    setSelectedTags(st => [...st, {...tag}]);
+    setSelectedTags(st => [...st, { ...tag }]);
   }
 
   function removeTag(tag, index) {

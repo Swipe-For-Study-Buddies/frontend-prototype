@@ -11,7 +11,7 @@ const Home = () => {
   }
   return (
     <div className="container">
-      <div style={{marginBottom: '20px'}}>HOME 頁面，還沒作好</div>
+      <div style={{ marginBottom: '20px' }}>HOME 頁面，還沒作好</div>
       <div onClick={logout}>登出</div>
     </div>
   );

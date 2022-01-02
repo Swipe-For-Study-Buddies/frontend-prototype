@@ -11,7 +11,7 @@ import MuiPickersDay from '@mui/lab/PickersDay';
 
 dayjs.locale('zh-tw');
 
-function MuiDatePicker({label, value = null, required = false, fullWidth = false, disabled = false, shouldDisableDate, onChange, ...props}) {
+function MuiDatePicker({ label, value = null, required = false, fullWidth = false, disabled = false, shouldDisableDate, onChange, ...props }) {
   const { formatMessage } = useIntl();
   const [textProps, setTextProps] = useState({});
 
@@ -28,14 +28,14 @@ function MuiDatePicker({label, value = null, required = false, fullWidth = false
 
   function onError(err) {
     if (err === 'minDate') {
-      setTextProps({helperText: props.minDateMessage});
+      setTextProps({ helperText: props.minDateMessage });
     } else if (err === 'maxDate') {
-      setTextProps({helperText: props.maxDateMessage});
+      setTextProps({ helperText: props.maxDateMessage });
     } else if (err) {
-      setTextProps({helperText: props.invalidDateMessage});
+      setTextProps({ helperText: props.invalidDateMessage });
     } else {
       if (required && value === null) {
-        setTextProps({error: true, helperText: formatMessage({ id: 'form.isRequired' })});
+        setTextProps({ error: true, helperText: formatMessage({ id: 'form.isRequired' }) });
       } else {
         setTextProps({});
       }
@@ -57,7 +57,7 @@ function MuiDatePicker({label, value = null, required = false, fullWidth = false
         rightArrowButtonText={formatMessage({ id: 'datePicker.nextMonth' })}
         allowSameDateSelection
         {...limit}
-        componentsProps={{error: true}}
+        componentsProps={{ error: true }}
         renderInput={(params) => <TextField
           required={required}
           fullWidth={fullWidth}
@@ -69,7 +69,7 @@ function MuiDatePicker({label, value = null, required = false, fullWidth = false
                   e2.stopPropagation();
                   e2.stopImmediatePropagation();
                 }
-              }, {once: true});
+              }, { once: true });
             }
           }
           {...params}

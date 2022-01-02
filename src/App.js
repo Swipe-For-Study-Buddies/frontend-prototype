@@ -64,7 +64,7 @@ function App() {
 
   return (
     <>
-      <AppBar position="static" sx={{backgroundColor: 'rgba(178, 182, 245)'}}>
+      <AppBar position="static" sx={{ backgroundColor: 'rgba(178, 182, 245)' }}>
         <Toolbar>
           <IconButton
             size="large"
@@ -75,7 +75,7 @@ function App() {
           >
             <MenuIcon />
           </IconButton>
-          <div style={{display: 'flex', flexDirection: 'row', flexGrow: 1}}>
+          <div style={{ display: 'flex', flexDirection: 'row', flexGrow: 1 }}>
             <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
             </Typography>
             <IconButton
