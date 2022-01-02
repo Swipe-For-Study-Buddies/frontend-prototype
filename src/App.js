@@ -1,5 +1,5 @@
-import React, { useEffect, useContext } from 'react';
-import { Routes, Route } from 'react-router-dom';
+import React, { useState, useEffect, useContext } from 'react';
+import { Routes, Route, Navigate } from 'react-router-dom';
 import { useNavigate } from 'react-router-dom';
 
 import { styled } from '@mui/material/styles';
@@ -47,7 +47,7 @@ function App() {
       navigate('/profile', { replace: true });
     }
   }, [currentUser.name, navigate]);
-  const [anchorEl, setAnchorEl] = React.useState(null);
+  const [anchorEl, setAnchorEl] = useState(null);
 
   const handleMenu = (event) => {
     setAnchorEl(event.currentTarget);
@@ -110,8 +110,9 @@ function App() {
       </AppBar>
       <Container>
         <Routes>
-          <Route exact path="/" element={<Home />} />
-          <Route exact path="/profile" element={<Profile />} />
+          <Route path="/profile" element={<Profile />} />
+          <Route path="/" element={<Home />} />
+          <Route path="*" element={<Navigate to="/" />} />
         </Routes>
       </Container>
     </>

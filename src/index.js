@@ -1,6 +1,6 @@
 import React, { useState, useMemo } from 'react';
 import ReactDOM from 'react-dom';
-import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
+import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import { createIntl, createIntlCache, RawIntlProvider } from 'react-intl';
 
 import Login from './components/Login';
@@ -17,6 +17,16 @@ const intl = createIntl({
   messages: i18n
 }, cache);
 
+function NoAuth() {
+  console.log('NoAuth');
+  return (
+    <Routes>
+      <Route exact path="/resetPassword/:token" element={<ResetPassword />} />
+      <Route path="*" element={<Login />} />
+    </Routes>
+  );
+}
+
 function Root() {
   const [currentUser, setCurrentUser] = useState(undefined);
   const contextValue = useMemo(
@@ -26,13 +36,7 @@ function Root() {
 
   return (
     <ContextStore.Provider value={{ ...contextValue }}>
-      {currentUser ? <App /> : (
-        <Routes>
-          <Route exact path="/" element={<Login />} />
-          <Route exact path="/resetPassword/:token" element={<ResetPassword />} />
-          <Route path="*" element={<Navigate to="/" />} />
-        </Routes>
-      )}
+      {currentUser ? <App /> : <NoAuth />}
     </ContextStore.Provider>
   );
 }
