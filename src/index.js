@@ -18,7 +18,6 @@ const intl = createIntl({
 }, cache);
 
 function NoAuth() {
-  console.log('NoAuth');
   return (
     <Routes>
       <Route exact path="/resetPassword/:token" element={<ResetPassword />} />
