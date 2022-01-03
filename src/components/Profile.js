@@ -23,6 +23,14 @@ const Profile = () => {
   const { setCurrentUser } = useContext(ContextStore);
   const [page, setPage] = useState('profile');
 
+  function switchToTagsPage() {
+    const profileContent = profileViewRef.current.getContent();
+    if (!profileContent) { // 資料不完整, 不要切頁面
+      return;
+    }
+    setPage('tags');
+  }
+
   function onApply() {
     const profileContent = profileViewRef.current.getContent();
     const tagsContent = tagsViewRef.current.getContent();
@@ -67,10 +75,10 @@ const Profile = () => {
           <EditTagsView ref={tagsViewRef} />
         </Grid>
         <Grid item xs={12} sm={12} md={12}>
-          <Box sx={{ display: 'flex', justifyContent: 'flex-end' }}>
+          <Box sx={{ display: 'flex', justifyContent: mdSize ? 'flex-end' : 'center' }}>
             <Button
               variant="contained"
-              onClick={e => setPage('tags')}
+              onClick={switchToTagsPage}
               color="primary"
               sx={{ display: !mdSize && page === 'profile' ? 'block' : 'none' }}
             >

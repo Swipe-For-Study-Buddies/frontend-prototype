@@ -2,6 +2,8 @@ import React, { useState, useContext, useImperativeHandle, forwardRef } from 're
 import { useIntl, FormattedMessage } from 'react-intl';
 import dayjs from 'dayjs';
 
+import { useTheme } from '@mui/material/styles';
+import useMediaQuery from '@mui/material/useMediaQuery';
 import Paper from '@mui/material/Paper';
 import TextField from '@mui/material/TextField';
 import MenuItem from '@mui/material/MenuItem';
@@ -29,6 +31,9 @@ const EditProfileView = forwardRef((props, ref) => {
     birthday: currentUser.birthday ?? null,
     job: currentUser.job ?? '',
   });
+
+  const theme = useTheme();
+  const mdSize = useMediaQuery(theme.breakpoints.up('md'));
 
   useImperativeHandle(
     ref, () => ({
@@ -168,7 +173,7 @@ const EditProfileView = forwardRef((props, ref) => {
   return (
     <Paper elevation={3}>
       <Stack padding={2} spacing={2}>
-        <Typography component="h1" variant="h5">
+        <Typography component="h1" variant="h5" align={mdSize ? 'left' : 'center'}>
           <FormattedMessage id={'profile.title'} />
         </Typography>
         {groupProfiles.map(field => (

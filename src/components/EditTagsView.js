@@ -1,6 +1,8 @@
 import React, { useState, useContext, useImperativeHandle, forwardRef } from 'react';
 import { useIntl, FormattedMessage } from 'react-intl';
 
+import { useTheme } from '@mui/material/styles';
+import useMediaQuery from '@mui/material/useMediaQuery';
 import OutlinedInput from '@mui/material/OutlinedInput';
 import Paper from '@mui/material/Paper';
 import Stack from '@mui/material/Stack';
@@ -48,6 +50,9 @@ const EditTagsView = forwardRef((props, ref) => {
       currentUser.wantingToLearn.map(tag => ({ name: tag, key: getHashKey(tag) })) : [],
   });
   const [tagsDialog, setTagsDialog] = useState('');
+
+  const theme = useTheme();
+  const mdSize = useMediaQuery(theme.breakpoints.up('md'));
 
   useImperativeHandle(
     ref, () => ({
@@ -152,7 +157,7 @@ const EditTagsView = forwardRef((props, ref) => {
       />}
       <Paper elevation={3}>
         <Stack padding={2} spacing={2}>
-          <Typography component="h1" variant="h5">
+          <Typography component="h1" variant="h5" align={mdSize ? 'left' : 'center'}>
             <FormattedMessage id={'profile.tags'} />
           </Typography>
           {groupTags.map(field => (
