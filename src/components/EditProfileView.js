@@ -7,20 +7,9 @@ import TextField from '@mui/material/TextField';
 import MenuItem from '@mui/material/MenuItem';
 import Stack from '@mui/material/Stack';
 import Typography from '@mui/material/Typography';
-import FormHelperText from '@mui/material/FormHelperText';
-import Box from '@mui/material/Box';
-import Autocomplete from '@mui/material/Autocomplete';
-import IconButton from '@mui/material/IconButton';
-import AddCircleIcon from '@mui/icons-material/AddCircle';
-import Tooltip from '@mui/material/Tooltip';
 
 import MuiDatePicker from './MuiDatePicker';
 import ContextStore from '../common/context';
-
-// TODO: 從 backend 把所有的聯絡方式選項撈回來
-const contactOptions = [
-  'Email', 'FaceBook', 'Line', 'Telegram', 'WhatsApp', '電話'
-];
 
 const groupProfiles = [
   { name: 'name', type: 'text', required: true },
@@ -29,7 +18,7 @@ const groupProfiles = [
   { name: 'job', type: 'text' },
 ].map(i => ({ ...i, required: i.required || false }));
 
-const fields = [{ name: 'contacts', required: true }].concat(groupProfiles);
+const fields = [...groupProfiles];
 
 const EditProfileView = forwardRef((props, ref) => {
   const { formatMessage } = useIntl();
@@ -39,7 +28,6 @@ const EditProfileView = forwardRef((props, ref) => {
     gender: currentUser.gender ?? '',
     birthday: currentUser.birthday ?? null,
     job: currentUser.job ?? '',
-    contacts: currentUser.contacts ?? []
   });
 
   useImperativeHandle(
@@ -142,44 +130,11 @@ const EditProfileView = forwardRef((props, ref) => {
     return null;
   }
 
-  function updateContactData(index, field, value) {
-    setProfileData(profile => {
-      const newContacts = [...profile.contacts];
-      newContacts[index][field] = value;
-      const newProfileData = { ...profile, contacts: newContacts };
-
-      // 檢查是否有至少一種聯絡方式
-      for (const contact of newContacts) {
-        const contactName = contact.contactName.trim();
-        const contactData = contact.contactData.trim();
-        if (contactName && contactData) {
-          delete newProfileData.contacts_err;
-          break;
-        }
-      }
-      return newProfileData;
-    });
-  }
-
-  function addContact() {
-    setProfileData(profile => ({ ...profile, contacts: [...profile.contacts, { contactName: '', contactData: '' }] }));
-  }
-
   function _getContent() {
     // 檢查必填欄位, 整理欄位資料, 呼叫 backend API
 
     // const data = structuredClone(profileData)
     const data = JSON.parse(JSON.stringify(profileData));
-
-    // 先清掉沒有完整設定的 contact
-    for (let i = data.contacts.length - 1; i >= 0; --i) {
-      const contact = data.contacts[i];
-      const contactName = contact.contactName.trim();
-      const contactData = contact.contactData.trim();
-      if (!contactName || !contactData) {
-        data.contacts.splice(i, 1);
-      }
-    }
 
     // 檢查必填欄位是否都填了值
     const errors = {};
@@ -218,49 +173,6 @@ const EditProfileView = forwardRef((props, ref) => {
         </Typography>
         {groupProfiles.map(field => (
           createField(field)
-        ))}
-        <div style={{ display: 'flex' }}>
-          <Typography component="h1" variant="h5">
-            <FormattedMessage id={'profile.contacts'} />
-          </Typography>
-          {!!profileData.contacts_err ?
-            <FormHelperText error={!!profileData.contacts_err} sx={{ flexGrow: 1 }}>
-              {formatMessage({ id: 'form.needContact' })}
-            </FormHelperText> :
-            <div style={{ flexGrow: 1 }}> </div>
-          }
-          <Tooltip title={formatMessage({ id: 'profile.addContact' })}>
-            <IconButton color="primary" onClick={addContact}>
-              <AddCircleIcon />
-            </IconButton>
-          </Tooltip>
-        </div>
-        {profileData.contacts.map((contact, index) => (
-          <Box key={`contacts-${index}`} sx={{ display: 'flex', gap: 1 }}>
-            <Autocomplete
-              sx={{ minWidth: '140px' }}
-              freeSolo
-              options={contactOptions.map((option) => option)}
-              onInputChange={(e, v) => { updateContactData(index, 'contactName', v); }}
-              inputValue={contact.contactName}
-              renderInput={(params) =>
-                <TextField
-                  {...params}
-                  // value={contact.contactName}
-                  required
-                  label={formatMessage({ id: 'profile.contacts' })}
-                />
-              }
-            />
-            <TextField
-              required
-              type="text"
-              label={formatMessage({ id: 'profile.contactData' })}
-              onChange={e => { updateContactData(index, 'contactData', e.target.value); }}
-              value={contact.contactData}
-              fullWidth
-            />
-          </Box>
         ))}
       </Stack>
     </Paper>
