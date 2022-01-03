@@ -155,7 +155,7 @@ const EditTagsView = forwardRef((props, ref) => {
         handleSave={onTagsChanged}
         tags={tagMapping[tagsDialog]}
       />}
-      <Paper elevation={3}>
+      <Paper elevation={mdSize ? 3 : 0}>
         <Stack padding={2} spacing={2}>
           <Typography component="h1" variant="h5" align={mdSize ? 'left' : 'center'}>
             <FormattedMessage id={'profile.tags'} />
