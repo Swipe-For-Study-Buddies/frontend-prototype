@@ -2,6 +2,7 @@ const i18n = {
   'profile': {
     'title': '個人資料',
     'tags': '標籤',
+    'selectPhoto': '從裝置中選擇一張照片',
     'name': '姓名',
     'gender': '性別',
     'birthday': '生日',
