@@ -1,7 +1,11 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import ReactDOM from 'react-dom';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import { createIntl, createIntlCache, RawIntlProvider } from 'react-intl';
+
+import { useTheme } from '@mui/material/styles';
+import useMediaQuery from '@mui/material/useMediaQuery';
+import Snackbar from '@mui/material/Snackbar';
 
 import Login from './components/Login';
 import ResetPassword from './components/ResetPassword';
@@ -27,14 +31,58 @@ function NoAuth() {
 }
 
 function Root() {
+  const theme = useTheme();
+  const mdSize = useMediaQuery(theme.breakpoints.up('md'));
+  const [snackPack, setSnackPack] = useState([]);
+  const [openMessage, setOpenMessage] = useState(false);
+  const [messageInfo, setMessageInfo] = useState(undefined);
+
   const [currentUser, setCurrentUser] = useState(undefined);
   const contextValue = useMemo(
-    () => ({ currentUser, setCurrentUser }),
+    () => ({ currentUser, setCurrentUser, addMessage: (message) => {
+      setSnackPack((prev) => [...prev, { message, key: new Date().getTime() }]);
+    } }),
     [currentUser]
   );
 
+  useEffect(() => {
+    if (snackPack.length && !messageInfo) {
+      // Set a new snack when we don't have an active one
+      setMessageInfo({ ...snackPack[0] });
+      setSnackPack((prev) => prev.slice(1));
+      setOpenMessage(true);
+    } else if (snackPack.length && messageInfo && openMessage) {
+      // Close an active snack when a new one is added
+      setOpenMessage(false);
+    }
+  }, [snackPack, messageInfo, openMessage]);
+
+  const handleMessageClose = (event, reason) => {
+    if (reason === 'clickaway') {
+      return;
+    }
+    setOpenMessage(false);
+  };
+
+  const handleMessageExited = () => {
+    setMessageInfo(undefined);
+  };
+
   return (
     <ContextStore.Provider value={{ ...contextValue }}>
+      <Snackbar
+        key={messageInfo ? messageInfo.key : undefined}
+        anchorOrigin={{
+          vertical: 'bottom',
+          horizontal: 'right',
+        }}
+        open={openMessage}
+        autoHideDuration={4000}
+        onClose={handleMessageClose}
+        TransitionProps={{ onExited: handleMessageExited }}
+        message={messageInfo ? messageInfo.message : undefined}
+        ContentProps={mdSize ? {} : { sx: { display: 'flex', justifyContent: 'center' } }}
+      />
       {currentUser ? <App /> : <NoAuth />}
     </ContextStore.Provider>
   );

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import { useIntl, FormattedMessage } from 'react-intl';
 import { useParams, useNavigate } from 'react-router-dom';
 
@@ -12,9 +12,9 @@ import Box from '@mui/material/Box';
 import Grid from '@mui/material/Grid';
 import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import Typography from '@mui/material/Typography';
-import Snackbar from '@mui/material/Snackbar';
 
 import AuthService from '../services/auth.service';
+import ContextStore from '../common/context';
 
 function Copyright() {
   return (
@@ -33,10 +33,8 @@ function ResetPassword() {
   const [page, setPage] = useState('loading');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
-  const [snackPack, setSnackPack] = useState([]);
-  const [openMessage, setOpenMessage] = useState(false);
-  const [messageInfo, setMessageInfo] = useState(undefined);
   const [error, setError] = useState({});
+  const { addMessage } = useContext(ContextStore);
 
   const passwordError = error.password ?? '';
   const confirmPasswordError = error.confirmPassword ?? '';
@@ -56,30 +54,12 @@ function ResetPassword() {
     }
   }, [token]);
 
-  useEffect(() => {
-    if (snackPack.length && !messageInfo) {
-      // Set a new snack when we don't have an active one
-      setMessageInfo({ ...snackPack[0] });
-      setSnackPack((prev) => prev.slice(1));
-      setOpenMessage(true);
-    } else if (snackPack.length && messageInfo && openMessage) {
-      // Close an active snack when a new one is added
-      setOpenMessage(false);
-    }
-  }, [snackPack, messageInfo, openMessage]);
-
   async function onSubmit() {
     if (page === 'resetPassword') {
       try {
         await AuthService.resetPassword({ password, token });
         // TODO: 切到登入頁, 顯示訊息
-        setSnackPack((prev) => [
-          ...prev,
-          {
-            message: formatMessage({ id: 'resetPassword.form.success' }),
-            key: new Date().getTime()
-          }
-        ]);
+        addMessage(formatMessage({ id: 'resetPassword.form.success' }));
         navigate('/', { replace: true });
         // setCurrentUser(profile)
       } catch (err) {
@@ -99,17 +79,6 @@ function ResetPassword() {
     setPage(newPage);
   }
 
-  const handleMessageClose = (event, reason) => {
-    if (reason === 'clickaway') {
-      return;
-    }
-    setOpenMessage(false);
-  };
-
-  const handleMessageExited = () => {
-    setMessageInfo(undefined);
-  };
-
   const buttonStatus = () => {
     if (page === 'resetPassword') {
       return (password !== '' &&
@@ -122,18 +91,6 @@ function ResetPassword() {
 
   return (
     <Grid container component="main" sx={{ height: '100vh' }}>
-      <Snackbar
-        key={messageInfo ? messageInfo.key : undefined}
-        anchorOrigin={{
-          vertical: 'bottom',
-          horizontal: 'right',
-        }}
-        open={openMessage}
-        autoHideDuration={4000}
-        onClose={handleMessageClose}
-        TransitionProps={{ onExited: handleMessageExited }}
-        message={messageInfo ? messageInfo.message : undefined}
-      />
       <CssBaseline />
       <Grid
         item

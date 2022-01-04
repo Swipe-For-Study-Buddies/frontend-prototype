@@ -11,7 +11,6 @@ import Box from '@mui/material/Box';
 import Grid from '@mui/material/Grid';
 import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import Typography from '@mui/material/Typography';
-import Snackbar from '@mui/material/Snackbar';
 
 import AuthService from '../services/auth.service';
 import UserService from '../services/user.service';
@@ -33,11 +32,8 @@ function LoginForm() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
-  const [snackPack, setSnackPack] = useState([]);
-  const [openMessage, setOpenMessage] = useState(false);
-  const [messageInfo, setMessageInfo] = useState(undefined);
   const [error, setError] = useState({});
-  const { setCurrentUser } = useContext(ContextStore);
+  const { setCurrentUser, addMessage } = useContext(ContextStore);
 
   const emailError = error.email ?? '';
   const passwordError = error.password ?? '';
@@ -48,18 +44,6 @@ function LoginForm() {
       setCurrentUser(profile);
     });
   }, [setCurrentUser]);
-
-  useEffect(() => {
-    if (snackPack.length && !messageInfo) {
-      // Set a new snack when we don't have an active one
-      setMessageInfo({ ...snackPack[0] });
-      setSnackPack((prev) => prev.slice(1));
-      setOpenMessage(true);
-    } else if (snackPack.length && messageInfo && openMessage) {
-      // Close an active snack when a new one is added
-      setOpenMessage(false);
-    }
-  }, [snackPack, messageInfo, openMessage]);
 
   async function onSubmit() {
     if (page === 'login') {
@@ -83,13 +67,7 @@ function LoginForm() {
     } else {
       try {
         await AuthService.getResetPasswordToken({ email });
-        setSnackPack((prev) => [
-          ...prev,
-          {
-            message: formatMessage({ id: 'login.form.resetPasswordMessage' }),
-            key: new Date().getTime()
-          }
-        ]);
+        addMessage(formatMessage({ id: 'login.form.resetPasswordMessage' }));
         setPage('login');
       } catch (err) {
         console.log(err);
@@ -107,17 +85,6 @@ function LoginForm() {
     setPage(newPage);
     setError({});
   }
-
-  const handleMessageClose = (event, reason) => {
-    if (reason === 'clickaway') {
-      return;
-    }
-    setOpenMessage(false);
-  };
-
-  const handleMessageExited = () => {
-    setMessageInfo(undefined);
-  };
 
   const buttonStatus = () => {
     if (page === 'login') {
@@ -140,18 +107,6 @@ function LoginForm() {
 
   return (
     <Grid container component="main" sx={{ height: '100vh' }}>
-      <Snackbar
-        key={messageInfo ? messageInfo.key : undefined}
-        anchorOrigin={{
-          vertical: 'bottom',
-          horizontal: 'right',
-        }}
-        open={openMessage}
-        autoHideDuration={4000}
-        onClose={handleMessageClose}
-        TransitionProps={{ onExited: handleMessageExited }}
-        message={messageInfo ? messageInfo.message : undefined}
-      />
       <CssBaseline />
       <Grid
         item
