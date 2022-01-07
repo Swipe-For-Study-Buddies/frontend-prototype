@@ -47,12 +47,15 @@ function LoginForm({ defaultPage = 'login' }) {
           setError({ email: formatMessage({ id: 'login.error.email' }) });
         } else if (msg === 'WrongPassword') {
           setError({ password: formatMessage({ id: 'login.error.password' }) });
+        } else if (msg === 'NotActivatedAccount') {
+          setError({ email: formatMessage({ id: 'login.error.notActivatedAccount' }) });
         }
       }
     } else if (page === 'signup') {
       try {
-        const profile = await AuthService.register({ email, password });
-        setCurrentUser(profile);
+        await AuthService.register({ email, password });
+        addMessage(formatMessage({ id: 'login.form.activateAccountMessage' }));
+        setPage('login');
       } catch (ex) {
       }
     } else {
@@ -65,6 +68,8 @@ function LoginForm({ defaultPage = 'login' }) {
         const msg = err?.response?.data?.message ?? '';
         if (msg === 'UserNotFound') {
           setError({ email: formatMessage({ id: 'login.error.email' }) });
+        } else if (msg === 'NotActivatedAccount') {
+          setError({ email: formatMessage({ id: 'login.error.notActivatedAccount' }) });
         }
       }
     }
@@ -73,6 +78,8 @@ function LoginForm({ defaultPage = 'login' }) {
   function switchPage(e, newPage) {
     e.stopPropagation();
     e.preventDefault();
+    setPassword('');
+    setConfirmPassword('');
     setPage(newPage);
     setError({});
   }
@@ -91,7 +98,7 @@ function LoginForm({ defaultPage = 'login' }) {
         confirmPassword !== '' &&
         !confirmPasswordError);
     } else if (page === 'resetPassword') {
-      return (email !== '' && !emailError);
+      return (email !== '');
     }
     return false;
   };

@@ -11,6 +11,7 @@ const i18n = {
       'forgotPassword': '忘記密碼？',
       'loginPage': '登入頁面',
       'resetPasswordMessage': '請至信箱收信並重設密碼',
+      'activateAccountMessage': '請至信箱收信以啟用帳號',
     },
     'error': {
       'email': 'Email錯誤',
@@ -18,6 +19,7 @@ const i18n = {
       'emptyEmail': 'Email 為必填',
       'emptyPassword': '密碼為必填',
       'confirmPassword': '兩次輸入的密碼不同',
+      'notActivatedAccount': '帳號尚未啟用',
     }
   }
 };

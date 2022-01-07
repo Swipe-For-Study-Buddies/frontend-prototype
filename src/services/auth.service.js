@@ -4,14 +4,11 @@ import { API_URL } from '../common/constants.js';
 const AUTH_API_URL = `${API_URL}auth/`;
 
 const register = async ({ email, password }) => {
-  // TODO: 加入 error handling
-  const res = await axios.post(AUTH_API_URL + 'register', {
+  await axios.post(AUTH_API_URL + 'register', {
     email,
     password,
   });
-  const { token } = res.data;
-  localStorage.setItem('accessToken', token);
-  return {};
+  return;
 };
 
 const activateAccount = async ({ token }) => {
