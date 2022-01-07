@@ -14,6 +14,13 @@ const register = async ({ email, password }) => {
   return {};
 };
 
+const activateAccount = async ({ token }) => {
+  await axios.post(AUTH_API_URL + 'activateAccount', {
+    token
+  });
+  return;
+};
+
 const login = async ({ email, password }) => {
   const res = await axios.post(AUTH_API_URL + 'login', {
     email,
@@ -54,6 +61,7 @@ const resetPassword = async ({ password, token }) => {
 
 const exportedObject = {
   register,
+  activateAccount,
   login,
   logout,
   getResetPasswordToken,

@@ -1,5 +1,6 @@
 import login from './login';
 import resetPassword from './resetPassword';
+import activateAccount from './activateAccount';
 import profile from './profile';
 import button from './button';
 import form from './form';
@@ -28,6 +29,7 @@ function flattenObject(ob, prefix = '') {
 const i18n = {
   ...login,
   ...resetPassword,
+  ...activateAccount,
   ...profile,
   ...button,
   ...form,

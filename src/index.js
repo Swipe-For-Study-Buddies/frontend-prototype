@@ -9,6 +9,8 @@ import Snackbar from '@mui/material/Snackbar';
 
 import Login from './components/Login';
 import ResetPassword from './components/ResetPassword';
+import ActivateAccount from './components/ActivateAccount';
+
 import './index.css';
 import App from './App';
 import i18n from './i18n/i18n';
@@ -24,7 +26,9 @@ const intl = createIntl({
 function NoAuth() {
   return (
     <Routes>
+      <Route exact path="/activateAccount/:token" element={<ActivateAccount />} />
       <Route exact path="/resetPassword/:token" element={<ResetPassword />} />
+      <Route path="/signup" element={<Login defaultPage='signup' />} />
       <Route path="*" element={<Login />} />
     </Routes>
   );

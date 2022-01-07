@@ -12,23 +12,14 @@ import Grid from '@mui/material/Grid';
 import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import Typography from '@mui/material/Typography';
 
+import Copyright from './Copyright';
 import AuthService from '../services/auth.service';
 import UserService from '../services/user.service';
 import ContextStore from '../common/context';
 
-function Copyright() {
-  return (
-    <Typography variant="body2" color="textSecondary" align="center">
-      {'Copyright © '}
-      {new Date().getFullYear()}
-      {'.'}
-    </Typography>
-  );
-}
-
-function LoginForm() {
+function LoginForm({ defaultPage = 'login' }) {
   const { formatMessage } = useIntl();
-  const [page, setPage] = useState('login');
+  const [page, setPage] = useState(defaultPage);
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
