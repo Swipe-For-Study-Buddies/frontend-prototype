@@ -20,6 +20,7 @@ import NotificationsIcon from '@mui/icons-material/Notifications';
 import CheckCircleOutlineIcon from '@mui/icons-material/CheckCircleOutline';
 import SettingsIcon from '@mui/icons-material/Settings';
 import LogoutIcon from '@mui/icons-material/Logout';
+import AssignmentIndIcon from '@mui/icons-material/AssignmentInd';
 
 import './App.scss';
 import Home from './components/Home';
@@ -101,6 +102,7 @@ function App() {
 
   const menuItems = currentUser.name ? [
     { text: 'profile', icon: <PersonIcon />, path: 'profile' },
+    { text: 'suggestion', icon: <AssignmentIndIcon />, path: 'home' },
     { text: 'notification', icon: <NotificationsIcon />, path: 'notification' },
     { text: 'matched', icon: <CheckCircleOutlineIcon />, path: 'matched' },
     { text: 'setting', icon: <SettingsIcon />, path: 'setting' },
@@ -159,8 +161,8 @@ function App() {
         <Routes>
           <Route path="/profile" element={<Profile />} />
           <Route path="/notification" element={<BlankPage />} />
-          <Route path="/Matched" element={<BlankPage />} />
-          <Route path="/Setting" element={<BlankPage />} />
+          <Route path="/matched" element={<BlankPage />} />
+          <Route path="/setting" element={<BlankPage />} />
           <Route path="/" element={<Home />} />
           <Route path="*" element={<Navigate to="/" />} />
         </Routes>

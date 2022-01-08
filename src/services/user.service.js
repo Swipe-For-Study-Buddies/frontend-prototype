@@ -25,9 +25,45 @@ const setUserProfile = async (profile) => {
   }
 };
 
+const getSuggestions = async () => {
+  try {
+    const res = await axios.get(USER_API_URL + 'getSuggestions', { headers: authHeader() });
+    return res.data;
+  } catch (error) {
+    return;
+  }
+};
+
+const approveSuggestion = async ({ id }) => {
+  try {
+    const res = await axios.post(
+      USER_API_URL + 'approveSuggestion',
+      { id },
+      { headers: authHeader() });
+    return res.data;
+  } catch (error) {
+    return;
+  }
+};
+
+const rejectSuggestion = async ({ id }) => {
+  try {
+    const res = await axios.post(
+      USER_API_URL + 'rejectSuggestion',
+      { id },
+      { headers: authHeader() });
+    return res.data;
+  } catch (error) {
+    return;
+  }
+};
+
 const exportedObject = {
   getUserProfile,
-  setUserProfile
+  setUserProfile,
+  getSuggestions,
+  approveSuggestion,
+  rejectSuggestion,
 };
 
 export default exportedObject;
