@@ -99,8 +99,30 @@ const EditProfileView = forwardRef((props, ref) => {
     const reader = new FileReader();
     const file = event.target.files[0];
     reader.onloadend = (event) => {
-      const data = event.target.result;
-      updateProfileData({ name: 'avatar', type: 'image' }, data);
+      const image = new Image();
+      image.onload = () => {
+        const canvas = document.createElement('canvas');
+        const max_size = 200;
+        let width = image.width;
+        let height = image.height;
+        if (width > height) {
+          if (width > max_size) {
+            height *= max_size / width;
+            width = max_size;
+          }
+        } else {
+          if (height > max_size) {
+            width *= max_size / height;
+            height = max_size;
+          }
+        }
+        canvas.width = width;
+        canvas.height = height;
+        canvas.getContext('2d').drawImage(image, 0, 0, width, height);
+        const dataUrl = canvas.toDataURL('image/jpeg');
+        updateProfileData({ name: 'avatar', type: 'image' }, dataUrl);
+      };
+      image.src = event.target.result;
     };
     reader.readAsDataURL(file);
   }
