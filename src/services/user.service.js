@@ -34,6 +34,15 @@ const getSuggestions = async () => {
   }
 };
 
+const getNotifications = async () => {
+  try {
+    const res = await axios.get(USER_API_URL + 'getNotifications', { headers: authHeader() });
+    return res.data;
+  } catch (error) {
+    return;
+  }
+};
+
 const approveSuggestion = async ({ id }) => {
   try {
     const res = await axios.post(
@@ -64,6 +73,7 @@ const exportedObject = {
   getSuggestions,
   approveSuggestion,
   rejectSuggestion,
+  getNotifications,
 };
 
 export default exportedObject;

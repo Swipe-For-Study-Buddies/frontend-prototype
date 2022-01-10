@@ -67,8 +67,12 @@ const Home = () => {
         (<>
           <ReviewPage profileData={formatData(suggestions[0])} />
           <div style={{ display: 'flex', flexDirection: 'row', justifyContent: 'center', margin: '16px 0px' }}>
-            <Fab type="error" onClick={() => review('approve')}><DoDisturbIcon /></Fab>
-            <Fab type="success" onClick={() => review('reject')}><CheckCircleOutlineIcon /></Fab>
+            <Fab type="error" onClick={() => review('reject')}>
+              <DoDisturbIcon />
+            </Fab>
+            <Fab type="success" onClick={() => review('approve')}>
+              <CheckCircleOutlineIcon />
+            </Fab>
           </div>
         </>) :
         <EmptyReviewPage />

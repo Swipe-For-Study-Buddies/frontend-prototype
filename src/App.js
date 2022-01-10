@@ -26,6 +26,9 @@ import './App.scss';
 import Home from './components/Home';
 import BlankPage from './components/BlankPage';
 import Profile from './components/Profile';
+import Notifications from './components/Notifications';
+import MatchedUsers from './components/MatchedUsers';
+
 import AuthService from './services/auth.service';
 import ContextStore from './common/context';
 
@@ -103,7 +106,7 @@ function App() {
   const menuItems = currentUser.name ? [
     { text: 'profile', icon: <PersonIcon />, path: 'profile' },
     { text: 'suggestion', icon: <AssignmentIndIcon />, path: 'home' },
-    { text: 'notification', icon: <NotificationsIcon />, path: 'notification' },
+    { text: 'notification', icon: <NotificationsIcon />, path: 'notifications' },
     { text: 'matched', icon: <CheckCircleOutlineIcon />, path: 'matched' },
     { text: 'setting', icon: <SettingsIcon />, path: 'setting' },
     { text: 'logout', icon: <LogoutIcon />, onClick: logout },
@@ -160,8 +163,8 @@ function App() {
       <Container>
         <Routes>
           <Route path="/profile" element={<Profile />} />
-          <Route path="/notification" element={<BlankPage />} />
-          <Route path="/matched" element={<BlankPage />} />
+          <Route path="/notifications" element={<Notifications />} />
+          <Route path="/matched" element={<MatchedUsers />} />
           <Route path="/setting" element={<BlankPage />} />
           <Route path="/" element={<Home />} />
           <Route path="*" element={<Navigate to="/" />} />

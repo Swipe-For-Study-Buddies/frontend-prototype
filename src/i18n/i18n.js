@@ -8,6 +8,7 @@ import datePicker from './datePicker';
 import selectTagsDialog from './selectTagsDialog';
 import sideMenu from './sideMenu';
 import reviewPage from './reviewPage';
+import notifications from './notifications';
 
 function flattenObject(ob, prefix = '') {
   const toReturn = {};
@@ -38,6 +39,7 @@ const i18n = {
   ...selectTagsDialog,
   ...sideMenu,
   ...reviewPage,
+  ...notifications,
 };
 
 export default flattenObject(i18n);

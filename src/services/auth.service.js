@@ -6,6 +6,7 @@ const AUTH_API_URL = `${API_URL}auth/`;
 const register = async ({ email, password }) => {
   await axios.post(AUTH_API_URL + 'register', {
     email,
+    username: email,
     password,
   });
   return;
@@ -21,9 +22,10 @@ const activateAccount = async ({ token }) => {
 const login = async ({ email, password }) => {
   const res = await axios.post(AUTH_API_URL + 'login', {
     email,
+    username: email,
     password,
   });
-  const { token, ...profile } = res.data;
+  const { access: token, ...profile } = res.data;
   localStorage.setItem('accessToken', token);
   return profile;
 };
