@@ -39,7 +39,8 @@ function LoginForm({ defaultPage = 'login' }) {
   async function onSubmit() {
     if (page === 'login') {
       try {
-        const profile = await AuthService.login({ email, password });
+        await AuthService.login({ email, password });
+        const profile = await UserService.getUserProfile();
         setCurrentUser(profile);
       } catch (err) {
         const msg = err?.response?.data?.message ?? '';
