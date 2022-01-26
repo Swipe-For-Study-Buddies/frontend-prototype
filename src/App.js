@@ -1,13 +1,14 @@
 import React, { useState, useEffect, useContext } from 'react';
-import { Routes, Route, Navigate, Link } from 'react-router-dom';
-import { useNavigate } from 'react-router-dom';
+import { Routes, Route, Navigate, Link, useLocation, useNavigate } from 'react-router-dom';
 import { useIntl } from 'react-intl';
 
 import { styled } from '@mui/material/styles';
+import { useTheme } from '@mui/material/styles';
+import useMediaQuery from '@mui/material/useMediaQuery';
 import AppBar from '@mui/material/AppBar';
 import Toolbar from '@mui/material/Toolbar';
 import Typography from '@mui/material/Typography';
-import IconButton from '@mui/material/IconButton';
+import MuiIconButton from '@mui/material/IconButton';
 import Box from '@mui/material/Box';
 import SwipeableDrawer from '@mui/material/SwipeableDrawer';
 import List from '@mui/material/List';
@@ -21,13 +22,19 @@ import CheckCircleOutlineIcon from '@mui/icons-material/CheckCircleOutline';
 import SettingsIcon from '@mui/icons-material/Settings';
 import LogoutIcon from '@mui/icons-material/Logout';
 import AssignmentIndIcon from '@mui/icons-material/AssignmentInd';
+import ArrowBackIcon from '@mui/icons-material/ArrowBack';
+import HelpOutlineIcon from '@mui/icons-material/HelpOutline';
 
 import './App.scss';
 import Home from './components/Home';
-import BlankPage from './components/BlankPage';
+// import BlankPage from './components/BlankPage';
 import Profile from './components/Profile';
 import Notifications from './components/Notifications';
 import MatchedUsers from './components/MatchedUsers';
+import SettingPage from './components/SettingPage';
+import Feedback from './components/Feedback';
+import ModifyPassword from './components/ModifyPassword';
+import DeleteAccount from './components/DeleteAccount';
 
 import AuthService from './services/auth.service';
 import ContextStore from './common/context';
@@ -52,6 +59,10 @@ function MuiListItem({ icon, text, path, onClick }) {
   );
 }
 
+const IconButton = styled(MuiIconButton)(({ theme, type }) => ({
+  color: type === 'error' ? 'rgb(197, 85, 99)' : 'rgb(81, 171, 159)',
+}));
+
 const Container = styled('div')(({ theme }) => ({
   overflow: 'scroll',
   position: 'relative',
@@ -75,6 +86,9 @@ const Container = styled('div')(({ theme }) => ({
 }));
 
 function App() {
+  const theme = useTheme();
+  const smSize = useMediaQuery(theme.breakpoints.up('sm'));
+  const location = useLocation();
   const { currentUser, setCurrentUser } = useContext(ContextStore);
   const navigate = useNavigate();
   const { formatMessage } = useIntl();
@@ -103,35 +117,64 @@ function App() {
     setCurrentUser(undefined);
   }
 
-  const menuItems = currentUser.name ? [
-    { text: 'profile', icon: <PersonIcon />, path: 'profile' },
-    { text: 'suggestion', icon: <AssignmentIndIcon />, path: 'home' },
-    { text: 'notification', icon: <NotificationsIcon />, path: 'notifications' },
-    { text: 'matched', icon: <CheckCircleOutlineIcon />, path: 'matched' },
-    { text: 'setting', icon: <SettingsIcon />, path: 'setting' },
-    { text: 'logout', icon: <LogoutIcon />, onClick: logout },
-  ] : [
-    { text: 'logout', icon: <LogoutIcon />, onClick: logout },
-  ];
+  const menuItems = () => {
+    if (!currentUser.name) {
+      return [
+        { text: 'logout', icon: <LogoutIcon />, onClick: logout },
+      ];
+    } else {
+      const items = [
+        { text: 'profile', icon: <PersonIcon />, path: 'profile' },
+        { text: 'notification', icon: <NotificationsIcon />, path: 'notifications' },
+        { text: 'matched', icon: <CheckCircleOutlineIcon />, path: 'matched' },
+        { text: 'setting', icon: <SettingsIcon />, path: 'setting' },
+        { text: 'logout', icon: <LogoutIcon />, onClick: logout },
+      ];
+      if (smSize) {
+        items.splice(1, 0, { text: 'suggestion', icon: <AssignmentIndIcon />, path: 'home' });
+      }
+      return items;
+    }
+  };
 
   return (
     <>
       <AppBar position="static" sx={{ backgroundColor: '#fff' }}>
         <Toolbar>
-          <div style={{ display: 'flex', flexDirection: 'row', flexGrow: 1 }}>
+          <div style={
+            {
+              display: 'flex',
+              flexDirection: 'row',
+              justifyContent: 'space-between',
+              flexGrow: 1
+            }
+          }>
+            {(location.pathname !== '/' && !smSize) &&
+              <IconButton
+                size="large"
+                aria-label="account of current user"
+                aria-controls="menu-appbar"
+                aria-haspopup="true"
+                onClick={() => navigate('/')}
+                color="primary"
+              >
+                <ArrowBackIcon />
+              </IconButton>
+            }
             <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
             </Typography>
-            <IconButton
-              size="large"
-              aria-label="account of current user"
-              aria-controls="menu-appbar"
-              aria-haspopup="true"
-              // onClick={handleMenu}
-              onClick={toggleDrawer(true)}
-              color="primary"
-            >
-              <MoreHorizIcon />
-            </IconButton>
+            {(location.pathname === '/' || smSize) &&
+              <IconButton
+                size="large"
+                aria-label="account of current user"
+                aria-controls="menu-appbar"
+                aria-haspopup="true"
+                onClick={toggleDrawer(true)}
+                color="primary"
+              >
+                <MoreHorizIcon />
+              </IconButton>
+            }
           </div>
         </Toolbar>
         <SwipeableDrawer
@@ -147,7 +190,7 @@ function App() {
             onKeyDown={toggleDrawer(false)}
           >
             <List>
-              {menuItems.map(item => (
+              {menuItems().map(item => (
                 <MuiListItem
                   key={item.text}
                   icon={item.icon}
@@ -158,6 +201,22 @@ function App() {
               )}
             </List>
           </Box>
+          <div style={{ flexGrow: 1 }}> </div>
+          <div
+            onClick={toggleDrawer(false)}
+            style={{ display: 'flex', flexDirection: 'row', justifyContent: 'flex-start' }}
+          >
+            <IconButton
+              size="large"
+              aria-label="account of current user"
+              aria-controls="menu-appbar"
+              aria-haspopup="true"
+              onClick={() => navigate('/feedback')}
+              color="primary"
+            >
+              <HelpOutlineIcon />
+            </IconButton>
+          </div>
         </SwipeableDrawer>
       </AppBar>
       <Container>
@@ -165,7 +224,10 @@ function App() {
           <Route path="/profile" element={<Profile />} />
           <Route path="/notifications" element={<Notifications />} />
           <Route path="/matched" element={<MatchedUsers />} />
-          <Route path="/setting" element={<BlankPage />} />
+          <Route path="/setting" element={<SettingPage />} />
+          <Route path="/modifyPassword" element={<ModifyPassword />} />
+          <Route path="/deleteAccount" element={<DeleteAccount />} />
+          <Route path="/feedback" element={<Feedback />} />
           <Route path="/" element={<Home />} />
           <Route path="*" element={<Navigate to="/" />} />
         </Routes>

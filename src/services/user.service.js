@@ -67,6 +67,30 @@ const rejectSuggestion = async ({ id }) => {
   }
 };
 
+const sendFeedback = async ({ content }) => {
+  try {
+    const res = await axios.post(
+      USER_API_URL + 'sendFeedback',
+      { content },
+      { headers: authHeader() });
+    return res.data;
+  } catch (error) {
+    return;
+  }
+};
+
+const modifyPassword = async ({ oldPassword, newPassword }) => {
+  try {
+    const res = await axios.post(
+      USER_API_URL + 'modifyPassword',
+      { oldPassword, newPassword },
+      { headers: authHeader() });
+    return res.data;
+  } catch (error) {
+    return;
+  }
+};
+
 const exportedObject = {
   getUserProfile,
   setUserProfile,
@@ -74,6 +98,8 @@ const exportedObject = {
   approveSuggestion,
   rejectSuggestion,
   getNotifications,
+  sendFeedback,
+  modifyPassword,
 };
 
 export default exportedObject;

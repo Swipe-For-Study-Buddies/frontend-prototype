@@ -9,6 +9,9 @@ import selectTagsDialog from './selectTagsDialog';
 import sideMenu from './sideMenu';
 import reviewPage from './reviewPage';
 import notifications from './notifications';
+import feedback from './feedback';
+import setting from './setting';
+import modifyPassword from './modifyPassword';
 
 function flattenObject(ob, prefix = '') {
   const toReturn = {};
@@ -40,6 +43,9 @@ const i18n = {
   ...sideMenu,
   ...reviewPage,
   ...notifications,
+  ...feedback,
+  ...setting,
+  ...modifyPassword,
 };
 
 export default flattenObject(i18n);
