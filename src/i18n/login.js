@@ -1,7 +1,7 @@
 const i18n = {
   'login': {
     'form': {
-      'email': 'Email 地址',
+      'email': '電子郵件地址',
       'password': '密碼',
       'confirmPassword': '確認密碼',
       'login': '登入',
@@ -14,9 +14,9 @@ const i18n = {
       'activateAccountMessage': '請至信箱收信以啟用帳號',
     },
     'error': {
-      'email': 'Email錯誤',
+      'email': '電子郵件錯誤',
       'password': '密碼錯誤',
-      'emptyEmail': 'Email 為必填',
+      'emptyEmail': '電子郵件為必填',
       'emptyPassword': '密碼為必填',
       'confirmPassword': '兩次輸入的密碼不同',
       'notActivatedAccount': '帳號尚未啟用',
